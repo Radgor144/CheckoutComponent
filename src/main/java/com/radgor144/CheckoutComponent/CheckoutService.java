@@ -5,6 +5,8 @@ import com.radgor144.CheckoutComponent.CartComponents.CartItemResponse;
 import com.radgor144.CheckoutComponent.CartComponents.CartResponse;
 import com.radgor144.CheckoutComponent.CartComponents.CartService;
 import com.radgor144.CheckoutComponent.CartComponents.PricingRule;
+import com.radgor144.CheckoutComponent.CartComponents.Validation.CartValidator;
+import com.radgor144.CheckoutComponent.Exceptions.CustomCartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,14 @@ public class CheckoutService {
     }
 
     public CartItemResponse addToCart(int idCart, String itemName, int amount) {
-        PricingRule rule = pricingRules.get(itemName);
-        if (rule == null) throw new RuntimeException("Product not found: " + itemName);
+        // Walidacja danych wejściowych
+        CartValidator.validateCartId(idCart);
+        CartValidator.validateAmount(amount);
+        CartValidator.validateItemName(itemName, pricingRules);
 
+        PricingRule rule = pricingRules.get(itemName);
         CartItem existingCartItem = cartService.findItemInCart(idCart, itemName);
+
         if (existingCartItem != null) {
             existingCartItem.setAmount(existingCartItem.getAmount() + amount);
         } else {
@@ -40,6 +46,9 @@ public class CheckoutService {
     }
 
     public CartResponse getCartDetails(int idCart) {
+        // Walidacja idCart przed rozpoczęciem operacji
+        CartValidator.validateCartId(idCart);
+
         List<CartItem> cartItems = cartService.getCartItems(idCart);
         List<CartItemResponse> itemResponses = new ArrayList<>();
         double totalAmount = 0;
@@ -57,14 +66,19 @@ public class CheckoutService {
     }
 
     public ResponseEntity removeFromCart(int idCart, String itemName, int amount) {
+        // Walidacja danych wejściowych
+        CartValidator.validateCartId(idCart);
+        CartValidator.validateAmount(amount);
+        CartValidator.validateItemName(itemName, pricingRules);
+
         CartItem existingCartItem = cartService.findItemInCart(idCart, itemName);
 
         if (existingCartItem == null) {
-            throw new RuntimeException("Item not found in cart: " + itemName);
+            throw new CustomCartException("Item not found in cart: " + itemName);
         }
 
         if (existingCartItem.getAmount() < amount) {
-            throw new RuntimeException("Not enough quantity to remove: " + itemName);
+            throw new CustomCartException("Not enough quantity to remove: " + itemName);
         }
 
         existingCartItem.setAmount(existingCartItem.getAmount() - amount);
@@ -72,12 +86,14 @@ public class CheckoutService {
         if (existingCartItem.getAmount() == 0) {
             cartService.removeItemFromCart(idCart, itemName);
         }
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     public void clearCart(int idCart) {
+        // Walidacja idCart przed usunięciem
+        CartValidator.validateCartId(idCart);
         if (!cartService.cartExists(idCart)) {
-            throw new RuntimeException("Cart not found: " + idCart);
+            throw new CustomCartException("Cart not found: " + idCart);
         }
         cartService.clearCart(idCart);
     }
