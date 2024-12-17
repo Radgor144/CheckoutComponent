@@ -28,6 +28,17 @@ public class CartService {
         }
     }
 
+    public boolean cartExists(int idCart) {
+        return carts.containsKey(idCart);
+    }
+
+    public void clearCart(int idCart) {
+        if (carts.containsKey(idCart)) {
+            carts.get(idCart).getItems().clear();
+        }
+    }
+
+
 
     public void addItemToCart(int idCart, CartItem cartItem) {
         Cart cart = carts.computeIfAbsent(idCart, id -> new Cart(id));

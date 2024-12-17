@@ -35,4 +35,10 @@ public class CheckoutController {
     public ResponseEntity removeFromCart(@RequestParam int idCart, @RequestParam String itemName, @RequestParam int amount) {
         return checkoutService.removeFromCart(idCart, itemName, amount);
     }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<?> clearCart(@RequestParam int idCart) {
+        checkoutService.clearCart(idCart);
+        return ResponseEntity.ok("Cart cleared successfully.");
+    }
 }

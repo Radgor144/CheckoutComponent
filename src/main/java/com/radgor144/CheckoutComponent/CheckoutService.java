@@ -75,6 +75,13 @@ public class CheckoutService {
         return null;
     }
 
+    public void clearCart(int idCart) {
+        if (!cartService.cartExists(idCart)) {
+            throw new RuntimeException("Cart not found: " + idCart);
+        }
+        cartService.clearCart(idCart);
+    }
+
 
     private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount) {
         return createCartItemResponse(rule, itemName, amount, calculateTotalPrice(rule, amount));
