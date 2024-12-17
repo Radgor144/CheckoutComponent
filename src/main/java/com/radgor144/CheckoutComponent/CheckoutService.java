@@ -6,6 +6,7 @@ import com.radgor144.CheckoutComponent.CartComponents.CartResponse;
 import com.radgor144.CheckoutComponent.CartComponents.CartService;
 import com.radgor144.CheckoutComponent.CartComponents.PricingRule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,6 +55,26 @@ public class CheckoutService {
 
         return new CartResponse(idCart, itemResponses, totalAmount);
     }
+
+    public ResponseEntity removeFromCart(int idCart, String itemName, int amount) {
+        CartItem existingCartItem = cartService.findItemInCart(idCart, itemName);
+
+        if (existingCartItem == null) {
+            throw new RuntimeException("Item not found in cart: " + itemName);
+        }
+
+        if (existingCartItem.getAmount() < amount) {
+            throw new RuntimeException("Not enough quantity to remove: " + itemName);
+        }
+
+        existingCartItem.setAmount(existingCartItem.getAmount() - amount);
+
+        if (existingCartItem.getAmount() == 0) {
+            cartService.removeItemFromCart(idCart, itemName);
+        }
+        return null;
+    }
+
 
     private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount) {
         return createCartItemResponse(rule, itemName, amount, calculateTotalPrice(rule, amount));

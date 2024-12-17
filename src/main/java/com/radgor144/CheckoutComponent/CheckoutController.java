@@ -3,6 +3,7 @@ package com.radgor144.CheckoutComponent;
 import com.radgor144.CheckoutComponent.CartComponents.CartResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,4 +31,8 @@ public class CheckoutController {
         return ResponseEntity.ok(checkoutService.getCartDetails(idCart));
     }
 
+    @DeleteMapping("/remove")
+    public ResponseEntity removeFromCart(@RequestParam int idCart, @RequestParam String itemName, @RequestParam int amount) {
+        return checkoutService.removeFromCart(idCart, itemName, amount);
+    }
 }

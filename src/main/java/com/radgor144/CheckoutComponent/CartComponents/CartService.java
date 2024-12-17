@@ -12,16 +12,22 @@ public class CartService {
 
     public CartItem findItemInCart(int idCart, String itemName) {
         Cart cart = carts.get(idCart);
-        if (cart != null) {
-            for (CartItem item : cart.getItems()) {
-                if (item.getItemName().equals(itemName)) {
-                    return item;
-                }
-            }
+        if (cart == null) {
+            return null;
         }
-        return null;
-
+        return cart.getItems().stream()
+                .filter(item -> item.getItemName().equals(itemName))
+                .findFirst()
+                .orElse(null);
     }
+
+    public void removeItemFromCart(int idCart, String itemName) {
+        Cart cart = carts.get(idCart);
+        if (cart != null) {
+            cart.getItems().removeIf(item -> item.getItemName().equals(itemName));
+        }
+    }
+
 
     public void addItemToCart(int idCart, CartItem cartItem) {
         Cart cart = carts.computeIfAbsent(idCart, id -> new Cart(id));
