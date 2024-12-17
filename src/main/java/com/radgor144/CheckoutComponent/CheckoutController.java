@@ -1,5 +1,6 @@
 package com.radgor144.CheckoutComponent;
 
+import com.radgor144.CheckoutComponent.CartComponents.CartResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,8 @@ public class CheckoutController {
     }
 
     @GetMapping("/scan")
-    public ResponseEntity<?> scan(@RequestParam int idCart) {
-        return ResponseEntity.ok(checkoutService.getCartItems(idCart));
+    public ResponseEntity<CartResponse> scan(@RequestParam int idCart) {
+        return ResponseEntity.ok(checkoutService.getCartDetails(idCart));
     }
+
 }

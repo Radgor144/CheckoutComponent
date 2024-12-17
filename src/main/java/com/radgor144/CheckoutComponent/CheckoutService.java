@@ -1,42 +1,80 @@
 package com.radgor144.CheckoutComponent;
 
+import com.radgor144.CheckoutComponent.CartComponents.CartItem;
+import com.radgor144.CheckoutComponent.CartComponents.CartItemResponse;
+import com.radgor144.CheckoutComponent.CartComponents.CartResponse;
+import com.radgor144.CheckoutComponent.CartComponents.CartService;
+import com.radgor144.CheckoutComponent.CartComponents.PricingRule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class CheckoutService {
-
     private final CartService cartService;
-    private final Map<String, Item> pricingRules;
+    private final Map<String, PricingRule> pricingRules;
 
+    @Autowired
     public CheckoutService(CartService cartService) {
         this.cartService = cartService;
-
-        this.pricingRules = new HashMap<>();
-        pricingRules.put("A", new Item("A", 40, 3, 90));
-        pricingRules.put("B", new Item("B", 10, 2, 15));
-        pricingRules.put("C", new Item("C", 30, 4, 80));
-        pricingRules.put("D", new Item("D", 25, 2, 47));
+        this.pricingRules = initializePricingRules();
     }
 
-    public Item addToCart(int idCart, String itemName, int amount) {
-        if (!pricingRules.containsKey(itemName)) {
-            throw new RuntimeException("Not found product: " + itemName);
+    public CartItemResponse addToCart(int idCart, String itemName, int amount) {
+        PricingRule rule = pricingRules.get(itemName);
+        if (rule == null) throw new RuntimeException("Product not found: " + itemName);
+
+        CartItem existingCartItem = cartService.findItemInCart(idCart, itemName);
+        if (existingCartItem != null) {
+            existingCartItem.setAmount(existingCartItem.getAmount() + amount);
+        } else {
+            cartService.addItemToCart(idCart, new CartItem(itemName, amount));
         }
 
-        Item ruleItem = pricingRules.get(itemName);
-
-        Item newItem = new Item(itemName, ruleItem.getPrice(), ruleItem.getItemsForDiscount(), ruleItem.getSpecialPrice());
-        newItem.setAmount(amount);
-
-        cartService.addItemToCart(idCart, newItem);
-        return newItem;
+        return createCartItemResponse(rule, itemName, amount);
     }
 
-    public List<Item> getCartItems(int idCart) {
-        return cartService.getCartById(idCart);
+    public CartResponse getCartDetails(int idCart) {
+        List<CartItem> cartItems = cartService.getCartItems(idCart);
+        List<CartItemResponse> itemResponses = new ArrayList<>();
+        double totalAmount = 0;
+
+        for (CartItem cartItem : cartItems) {
+            PricingRule rule = pricingRules.get(cartItem.getItemName());
+            double totalPrice = calculateTotalPrice(rule, cartItem.getAmount());
+
+            CartItemResponse response = createCartItemResponse(rule, cartItem.getItemName(), cartItem.getAmount(), totalPrice);
+            itemResponses.add(response);
+            totalAmount += totalPrice;
+        }
+
+        return new CartResponse(idCart, itemResponses, totalAmount);
+    }
+
+    private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount) {
+        return createCartItemResponse(rule, itemName, amount, calculateTotalPrice(rule, amount));
+    }
+
+    private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount, double totalPrice) {
+        return new CartItemResponse(itemName, amount, rule.getPrice(), rule.getSpecialPrice(), totalPrice);
+    }
+
+    private double calculateTotalPrice(PricingRule rule, int amount) {
+        int promoSets = amount / rule.getItemsForDiscount();
+        int remainingItems = amount % rule.getItemsForDiscount();
+        return (promoSets * rule.getSpecialPrice()) + (remainingItems * rule.getPrice());
+    }
+
+    private Map<String, PricingRule> initializePricingRules() {
+        Map<String, PricingRule> rules = new HashMap<>();
+        rules.put("A", new PricingRule("A", 40, 3, 90));
+        rules.put("B", new PricingRule("B", 10, 2, 15));
+        rules.put("C", new PricingRule("C", 30, 4, 80));
+        rules.put("D", new PricingRule("D", 25, 2, 47));
+        return rules;
     }
 }
