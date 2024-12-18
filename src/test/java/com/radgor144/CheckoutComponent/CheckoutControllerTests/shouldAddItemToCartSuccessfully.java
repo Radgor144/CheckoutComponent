@@ -13,6 +13,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.stream.Stream;
 
+import static com.radgor144.CheckoutComponent.util.RequestUtil.postAddToCart;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,10 +31,7 @@ public class shouldAddItemToCartSuccessfully {
         CartItemResponse cartItemResponse = new CartItemResponse(item, amount, unitPrice, discountPrice, totalPrice);
 
         //when
-        var result = webTestClient
-                .post()
-                .uri("/api/add?idCart=" + idCart + "&item=" + item + "&amount=" + amount)
-                .exchange();
+        var result = postAddToCart(webTestClient, idCart, item, amount);
 
         //then
         result

@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.radgor144.CheckoutComponent.util.RequestUtil.postAddToCart;
 
 @SpringBootTest(properties =
         "spring.cloud.openfeign.client.config.weather-client.url=http://localhost:${wiremock.server.port}",
@@ -40,10 +41,7 @@ public class shouldReturnBadRequestWhenUserProvidesInvalidArgumentsForAdd {
         );
 
         //when
-        var result = webTestClient
-                .post()
-                .uri("/api/add?idCart=" + idCart + "&item=" + item + "&amount=" + amount)
-                .exchange();
+        var result = postAddToCart(webTestClient, idCart, item, amount);
 
         //then
         result
