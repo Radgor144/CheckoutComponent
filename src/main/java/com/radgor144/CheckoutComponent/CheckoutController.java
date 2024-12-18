@@ -28,9 +28,9 @@ public class CheckoutController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToCart(@RequestParam @Valid @Min(1) int idCart,
-                                       @RequestParam @Valid @NotBlank @Size(min = 1, max = 40)  String item,
-                                       @RequestParam @Valid @Min(1) int amount) {
+    public ResponseEntity<?> addToCart(@RequestParam @Valid @Min(value = 1, message = "IdCart must be greater than or equal to 1") int idCart,
+                                       @RequestParam @Valid @NotBlank(message = "Item name cannot be empty") @Size(min = 1, max = 40, message = "Item name must be between 1 and 40 characters")  String item,
+                                       @RequestParam @Valid @Min(value = 1, message = "Amount must be greater than or equal to 1") int amount) {
         return ResponseEntity.ok(checkoutService.addToCart(idCart, item, amount));
     }
 

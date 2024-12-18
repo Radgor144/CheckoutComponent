@@ -24,7 +24,7 @@ public class shouldAddItemToCartSuccessfully {
     private WebTestClient webTestClient;
 
     @ParameterizedTest
-    @MethodSource("provideCartItems")
+    @MethodSource("provideCartItemsMethodSource")
     void shouldAddItemToCartSuccessfully(int idCart, String item, int amount, double unitPrice, double discountPrice, double totalPrice) {
         //given
         CartItemResponse cartItemResponse = new CartItemResponse(item, amount, unitPrice, discountPrice, totalPrice);
@@ -45,7 +45,7 @@ public class shouldAddItemToCartSuccessfully {
                 );
     }
 
-    public Stream<Arguments> provideCartItems() {
+    public static Stream<Arguments> provideCartItemsMethodSource() {
         return Stream.of(
                 Arguments.of(1, "A", 1, 40.0, 90.0, 40.0),
                 Arguments.of(2, "B", 1, 10.0, 15.0, 10.0),
