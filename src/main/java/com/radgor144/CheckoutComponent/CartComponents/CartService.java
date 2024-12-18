@@ -1,5 +1,6 @@
 package com.radgor144.CheckoutComponent.CartComponents;
 
+import com.radgor144.CheckoutComponent.Exceptions.CustomCartException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class CartService {
 
     public List<CartItem> getCartItems(int idCart) {
         if (!carts.containsKey(idCart)) {
-            throw new RuntimeException("No cart found with id: " + idCart);
+            throw new CustomCartException("No cart found with id: " + idCart);
         }
         return carts.get(idCart).getItems();
     }
