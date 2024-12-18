@@ -38,8 +38,6 @@ public class CartService {
         }
     }
 
-
-
     public void addItemToCart(int idCart, CartItem cartItem) {
         Cart cart = carts.computeIfAbsent(idCart, id -> new Cart(id));
         cart.addItem(cartItem);

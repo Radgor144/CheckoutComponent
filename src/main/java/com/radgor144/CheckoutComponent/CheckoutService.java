@@ -28,7 +28,6 @@ public class CheckoutService {
     }
 
     public CartItemResponse addToCart(int idCart, String itemName, int amount) {
-        // Walidacja danych wejściowych
         CartValidator.validateCartId(idCart);
         CartValidator.validateAmount(amount);
         CartValidator.validateItemName(itemName, pricingRules);
@@ -42,11 +41,10 @@ public class CheckoutService {
             cartService.addItemToCart(idCart, new CartItem(itemName, amount));
         }
 
-        return createCartItemResponse(rule, itemName, amount);
+        return createCartItemResponseWithCalculatedPrice(rule, itemName, amount);
     }
 
     public CartResponse getCartDetails(int idCart) {
-        // Walidacja idCart przed rozpoczęciem operacji
         CartValidator.validateCartId(idCart);
 
         List<CartItem> cartItems = cartService.getCartItems(idCart);
@@ -57,7 +55,7 @@ public class CheckoutService {
             PricingRule rule = pricingRules.get(cartItem.getItemName());
             double totalPrice = calculateTotalPrice(rule, cartItem.getAmount());
 
-            CartItemResponse response = createCartItemResponse(rule, cartItem.getItemName(), cartItem.getAmount(), totalPrice);
+            CartItemResponse response = createCartItemResponseWithGivenPrice(rule, cartItem.getItemName(), cartItem.getAmount(), totalPrice);
             itemResponses.add(response);
             totalAmount += totalPrice;
         }
@@ -66,7 +64,6 @@ public class CheckoutService {
     }
 
     public ResponseEntity removeFromCart(int idCart, String itemName, int amount) {
-        // Walidacja danych wejściowych
         CartValidator.validateCartId(idCart);
         CartValidator.validateAmount(amount);
         CartValidator.validateItemName(itemName, pricingRules);
@@ -90,7 +87,6 @@ public class CheckoutService {
     }
 
     public void clearCart(int idCart) {
-        // Walidacja idCart przed usunięciem
         CartValidator.validateCartId(idCart);
         if (!cartService.cartExists(idCart)) {
             throw new CustomCartException("Cart not found: " + idCart);
@@ -99,11 +95,11 @@ public class CheckoutService {
     }
 
 
-    private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount) {
-        return createCartItemResponse(rule, itemName, amount, calculateTotalPrice(rule, amount));
+    private CartItemResponse createCartItemResponseWithCalculatedPrice(PricingRule rule, String itemName, int amount) {
+        return createCartItemResponseWithGivenPrice(rule, itemName, amount, calculateTotalPrice(rule, amount));
     }
 
-    private CartItemResponse createCartItemResponse(PricingRule rule, String itemName, int amount, double totalPrice) {
+    private CartItemResponse createCartItemResponseWithGivenPrice(PricingRule rule, String itemName, int amount, double totalPrice) {
         return new CartItemResponse(itemName, amount, rule.getPrice(), rule.getSpecialPrice(), totalPrice);
     }
 

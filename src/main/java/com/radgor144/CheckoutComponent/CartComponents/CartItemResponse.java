@@ -1,5 +1,7 @@
 package com.radgor144.CheckoutComponent.CartComponents;
 
+import java.util.Objects;
+
 public class CartItemResponse {
     private String itemName;
     private int amount;
@@ -53,5 +55,22 @@ public class CartItemResponse {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItemResponse that = (CartItemResponse) o;
+        return amount == that.amount &&
+                Double.compare(that.unitPrice, unitPrice) == 0 &&
+                Double.compare(that.discountPrice, discountPrice) == 0 &&
+                Double.compare(that.totalPrice, totalPrice) == 0 &&
+                Objects.equals(itemName, that.itemName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemName, amount, unitPrice, discountPrice, totalPrice);
     }
 }
