@@ -8,7 +8,6 @@ import com.radgor144.CheckoutComponent.CartComponents.PricingRule;
 import com.radgor144.CheckoutComponent.CartComponents.Validation.CartValidator;
 import com.radgor144.CheckoutComponent.Exceptions.CustomCartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class CheckoutService {
         return new CartResponse(idCart, itemResponses, totalAmount);
     }
 
-    public ResponseEntity removeFromCart(int idCart, String itemName, int amount) {
+    public void removeFromCart(int idCart, String itemName, int amount) {
         CartValidator.validateCartId(idCart);
         CartValidator.validateAmount(amount);
         CartValidator.validateItemName(itemName, pricingRules);
@@ -83,7 +82,6 @@ public class CheckoutService {
         if (existingCartItem.getAmount() == 0) {
             cartService.removeItemFromCart(idCart, itemName);
         }
-        return ResponseEntity.ok().build();
     }
 
     public void clearCart(int idCart) {
