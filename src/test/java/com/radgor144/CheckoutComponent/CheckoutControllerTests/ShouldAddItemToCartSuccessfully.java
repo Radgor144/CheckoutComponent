@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class shouldAddItemToCartSuccessfully {
+public class ShouldAddItemToCartSuccessfully {
 
     @Autowired
     private WebTestClient webTestClient;

@@ -23,7 +23,7 @@ import static com.radgor144.CheckoutComponent.util.RequestUtil.postAddToCart;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 0)
-public class shouldReturnBadRequestWhenUserProvidesInvalidArgumentsForAdd {
+public class ShouldReturnBadRequestWhenUserProvidesInvalidArgumentsForAdd {
 
     @Autowired
     private WebTestClient webTestClient;

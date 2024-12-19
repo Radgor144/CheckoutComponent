@@ -101,13 +101,13 @@ public class CheckoutService {
         return new CartItemResponse(itemName, amount, rule.getPrice(), rule.getSpecialPrice(), totalPrice);
     }
 
-    private double calculateTotalPrice(PricingRule rule, int amount) {
+    public double calculateTotalPrice(PricingRule rule, int amount) {
         int promoSets = amount / rule.getItemsForDiscount();
         int remainingItems = amount % rule.getItemsForDiscount();
         return (promoSets * rule.getSpecialPrice()) + (remainingItems * rule.getPrice());
     }
 
-    private Map<String, PricingRule> initializePricingRules() {
+    public Map<String, PricingRule> initializePricingRules() {
         Map<String, PricingRule> rules = new HashMap<>();
         rules.put("A", new PricingRule("A", 40, 3, 90));
         rules.put("B", new PricingRule("B", 10, 2, 15));

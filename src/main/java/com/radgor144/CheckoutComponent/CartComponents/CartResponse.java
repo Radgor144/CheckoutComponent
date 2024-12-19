@@ -1,6 +1,7 @@
 package com.radgor144.CheckoutComponent.CartComponents;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CartResponse {
     private int cartId;
@@ -35,6 +36,21 @@ public class CartResponse {
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartResponse that = (CartResponse) o;
+        return cartId == that.cartId &&
+                Double.compare(that.totalAmount, totalAmount) == 0 &&
+                Objects.equals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cartId, items, totalAmount);
     }
 }
 
