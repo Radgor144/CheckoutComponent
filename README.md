@@ -46,7 +46,7 @@
 ### Build tools:
 - **Maven** - Tool for managing dependencies, building, and managing projects.
 
-### Key Features and Architecture <a name = "key-features-and-architecture"></a>
+## Key Features and Architecture <a name = "key-features-and-architecture"></a>
 
 1. **Data Validation**:
     - The application ensures that all incoming data is properly validated using Java's Jakarta Validation annotations and Spring's `@Validated`. For example:
@@ -64,6 +64,6 @@
     - The application supports special pricing rules for certain items, allowing price adjustments based on conditions like discounts for purchasing multiple items.
 
 
-### Potential Changes: <a name="potential-changes"></a>
+## Potential Changes: <a name="potential-changes"></a>
 
 -  **Database Integration**: Currently, the service runs entirely in-memory. It could be extended to support a database (e.g., MySQL, PostgreSQL) for persistent data storage.
