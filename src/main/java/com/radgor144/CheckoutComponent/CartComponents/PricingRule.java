@@ -1,10 +1,5 @@
 package com.radgor144.CheckoutComponent.CartComponents;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class PricingRule {
     private String itemName;
     private double price;

@@ -35,19 +35,19 @@ public class CheckoutController {
     }
 
     @GetMapping("/scan")
-    public ResponseEntity<CartResponse> scan(@RequestParam @Valid @Min(1) int idCart) {
+    public ResponseEntity<CartResponse> scan(@RequestParam @Valid @Min(value = 1, message = "IdCart must be greater than or equal to 1") int idCart) {
         return ResponseEntity.ok(checkoutService.getCartDetails(idCart));
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity removeFromCart(@RequestParam @Valid @Min(1) int idCart,
-                                         @RequestParam @Valid @NotBlank @Size(min = 1, max = 40)  String item,
-                                         @RequestParam @Valid @Min(1) int amount) {
+    public ResponseEntity removeFromCart(@RequestParam @Valid @Min(value = 1, message = "IdCart must be greater than or equal to 1") int idCart,
+                                         @RequestParam @Valid @NotBlank(message = "Item name cannot be empty") @Size(min = 1, max = 40, message = "Item name must be between 1 and 40 characters")  String item,
+                                         @RequestParam @Valid @Min(value = 1, message = "Amount must be greater than or equal to 1") int amount) {
         return checkoutService.removeFromCart(idCart, item, amount);
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<?> clearCart(@RequestParam @Valid @Min(1) int idCart) {
+    public ResponseEntity<?> clearCart(@RequestParam @Valid @Min(value = 1, message = "IdCart must be greater than or equal to 1") int idCart) {
         checkoutService.clearCart(idCart);
         return ResponseEntity.ok("Cart cleared successfully.");
     }
